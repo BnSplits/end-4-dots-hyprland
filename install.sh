@@ -18,18 +18,6 @@ startask () {
   printf 'This script 1. only works for ArchLinux and Arch-based distros.\n'
   printf '            2. does not handle system-level/hardware stuff like Nvidia drivers\n'
   printf "\e[31m"
-  
-  printf "Would you like to create a backup for \"$XDG_CONFIG_HOME\" and \"$HOME/.local/\" folders?\n[y/N]: "
-  read -p " " backup_confirm
-  case $backup_confirm in
-    [yY][eE][sS]|[yY])
-      backup_configs
-      ;;
-    *)
-      echo "Skipping backup..."
-      ;;
-  esac
-  
 
   printf '\n'
   printf 'Do you want to confirm every time before a command executes?\n'
@@ -118,11 +106,7 @@ install-local-pkgbuild() {
 # Install core dependencies from the meta-packages
 metapkgs=(./arch-packages/illogical-impulse-{audio,backlight,basic,fonts-themes,gnome,gtk,portal,python,screencapture,widgets})
 metapkgs+=(./arch-packages/illogical-impulse-ags)
-metapkgs+=(./arch-packages/illogical-impulse-microtex-git)
 metapkgs+=(./arch-packages/illogical-impulse-oneui4-icons-git)
-[[ -f /usr/share/icons/Bibata-Modern-Classic/index.theme ]] || \
-  metapkgs+=(./arch-packages/illogical-impulse-bibata-modern-classic-bin)
-try sudo pacman -R illogical-impulse-microtex
 
 for i in "${metapkgs[@]}"; do
 	metainstallflags="--needed"
@@ -195,24 +179,17 @@ v mkdir -p $XDG_BIN_HOME $XDG_CACHE_HOME $XDG_CONFIG_HOME $XDG_DATA_HOME
 # original dotfiles and new ones in the SAME DIRECTORY
 # (eg. in ~/.config/hypr) won't be mixed together
 
-# MISC (For .config/* but not AGS, not Fish, not Hyprland)
+# MISC (For .config/* but not AGS, not Hyprland)
 case $SKIP_MISCCONF in
   true) sleep 0;;
   *)
-    for i in $(find .config/ -mindepth 1 -maxdepth 1 ! -name 'ags' ! -name 'fish' ! -name 'hypr' -exec basename {} \;); do
+    for i in $(find .config/ -mindepth 1 -maxdepth 1 ! -name 'ags' ! -name 'hypr' -exec basename {} \;); do
 #      i=".config/$i"
       echo "[$0]: Found target: .config/$i"
       if [ -d ".config/$i" ];then v rsync -av --delete ".config/$i/" "$XDG_CONFIG_HOME/$i/"
       elif [ -f ".config/$i" ];then v rsync -av ".config/$i" "$XDG_CONFIG_HOME/$i"
       fi
     done
-    ;;
-esac
-
-case $SKIP_FISH in
-  true) sleep 0;;
-  *)
-    v rsync -av --delete .config/fish/ "$XDG_CONFIG_HOME"/fish/
     ;;
 esac
 
@@ -285,7 +262,6 @@ warn_files_tests+=(/usr/local/share/licenses/ttf-rubik)
 warn_files_tests+=(/usr/local/share/fonts/TTF/Gabarito-{Black,Bold,ExtraBold,Medium,Regular,SemiBold}.ttf)
 warn_files_tests+=(/usr/local/share/licenses/ttf-gabarito)
 warn_files_tests+=(/usr/local/share/icons/OneUI{,-dark,-light})
-warn_files_tests+=(/usr/local/share/icons/Bibata-Modern-Classic)
 warn_files_tests+=(/usr/local/bin/{LaTeX,res})
 for i in ${warn_files_tests[@]}; do
   echo $i

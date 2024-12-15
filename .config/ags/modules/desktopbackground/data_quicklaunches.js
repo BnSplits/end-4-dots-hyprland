@@ -5,7 +5,7 @@ export const quickLaunchItems = [
     },
     {
         "name": "Terminal×2",
-        "command": "foot & foot &"
+        "command": "kiity & kitty &"
     },
     {
         "name": "Discord + Youtube + Github",

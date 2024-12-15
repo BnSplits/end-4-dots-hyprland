@@ -89,7 +89,7 @@ export default () => SidebarModule({
                         child: scriptStateIcon,
                         onClicked: () => {
                             closeEverything();
-                            execAsync([`bash`, `-c`, `${userOptions.apps.terminal} fish -C "${script.command}"`]).catch(print)
+                            execAsync([`bash`, `-c`, `${userOptions.apps.terminal} fish -C "${script.command}"`]).catch(printc) // Must keep fish there because bash/zsh dont have SIMPLE equivalents to fish -C
                                 .then(() => {
                                     scriptStateIcon.label = 'done';
                                 })

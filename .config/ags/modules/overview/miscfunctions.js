@@ -88,7 +88,7 @@ export function launchCustomCommand(command) {
 export function execAndClose(command, terminal) {
     App.closeWindow('overview');
     if (terminal) {
-        execAsync([`bash`, `-c`, `${userOptions.apps.terminal} fish -C "${command}"`, `&`]).catch(print);
+        execAsync([`bash`, `-c`, `${userOptions.apps.terminal} fish -C "${command}"`, `&`]).catch(print); // Must keep fish there because bash/zsh dont have SIMPLE equivalents to fish -C
     }
     else
         execAsync(command).catch(print);
